@@ -1,0 +1,15 @@
+{
+  "name": "open-protocol-tester",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local web tester and reusable protocol layer for DEPRAG/Open Protocol tightening controllers.",
+  "scripts": {
+    "start": "node src/server.js",
+    "mock": "node src/mock-controller.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Protocol Tester</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Open Protocol Tester</h1>
+        <p>DEPRAG / Open Protocol R1.0 本地 TCP 调试台</p>
+      </div>
+      <div class="status" id="statusBadge">未连接</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel connection">
+        <h2>连接</h2>
+        <form id="connectForm" class="grid-form">
+          <label>IP / Host <input name="host" value="127.0.0.1"></label>
+          <label>端口 <input name="port" type="number" value="4545"></label>
+          <label>Profile
+            <select name="profile">
+              <option>OP R1.0</option>
+              <option>OP-Ford R1.0</option>
+            </select>
+          </label>
+          <label>Revision <input name="revision" value="001" maxlength="3"></label>
+          <label>Keep alive 秒 <input name="keepAliveSeconds" type="number" value="10" min="0"></label>
+          <label class="check"><input name="handshake" type="checkbox" checked> 连接后发送 MID 0001</label>
+          <div class="actions">
+            <button type="submit">连接</button>
+            <button type="button" id="disconnectBtn" class="secondary">断开</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel raw-console">
+        <h2>原始 MID 控制台</h2>
+        <form id="rawForm" class="grid-form">
+          <label>MID <input name="mid" value="0001" maxlength="4"></label>
+          <label>Revision <input name="revision" value="001" maxlength="3"></label>
+          <label class="check"><input name="noAck" type="checkbox"> No ack</label>
+          <label class="wide">Data ASCII <textarea name="rawData" rows="4" placeholder="按说明书输入 data 字段，不需要 NUL 结束符"></textarea></label>
+          <div class="actions"><button type="submit">发送 Raw</button></div>
+        </form>
+      </section>
+
+      <section class="panel quick">
+        <h2>常用操作</h2>
+        <div class="quick-grid" id="quickActions"></div>
+      </section>
+
+      <section class="panel schemas">
+        <h2>MID Schema</h2>
+        <input id="schemaFilter" class="filter" placeholder="过滤 MID 或描述">
+        <div class="schema-list" id="schemaList"></div>
+      </section>
+
+      <section class="panel events">
+        <div class="event-header">
+          <h2>事件日志</h2>
+          <div class="event-tools">
+            <input id="eventFilter" class="filter" placeholder="过滤 MID / 类型">
+            <button id="exportBtn" class="secondary">导出 JSON</button>
+            <button id="clearBtn" class="secondary">清空</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>类型</th>
+              <th>MID</th>
+              <th>描述</th>
+              <th>Data / Parsed</th>
+            </tr>
+          </thead>
+          <tbody id="eventRows"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
