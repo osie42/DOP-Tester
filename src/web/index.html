@@ -12,12 +12,24 @@
         <h1>Open Protocol Tester</h1>
         <p>DEPRAG / Open Protocol R1.0 本地 TCP 调试台</p>
       </div>
-      <div class="status" id="statusBadge">未连接</div>
+      <div class="top-connection">
+        <div class="status" id="statusBadge">未连接</div>
+        <span id="topConnectionTarget">-</span>
+        <button type="button" class="secondary mini" id="topEditConnectionBtn">修改连接</button>
+      </div>
     </header>
 
     <main class="layout">
       <section class="panel connection">
-        <h2>连接</h2>
+        <div class="connection-head">
+          <h2>连接</h2>
+          <button type="button" class="secondary mini" id="editConnectionBtn">修改连接</button>
+        </div>
+        <div class="connection-summary" id="connectionSummary">
+          <span id="connectionDot" class="dot"></span>
+          <strong id="connectionText">未连接</strong>
+          <span id="connectionTarget">-</span>
+        </div>
         <form id="connectForm" class="grid-form">
           <label>IP / Host <input name="host" value="127.0.0.1"></label>
           <label>端口 <input name="port" type="number" value="4545"></label>
@@ -37,27 +49,25 @@
         </form>
       </section>
 
-      <section class="panel raw-console">
-        <h2>原始 MID 控制台</h2>
-        <form id="rawForm" class="grid-form">
-          <label>MID <input name="mid" value="0001" maxlength="4"></label>
-          <label>Revision <input name="revision" value="001" maxlength="3"></label>
-          <label class="check"><input name="noAck" type="checkbox"> No ack</label>
-          <label class="wide">Data ASCII <textarea name="rawData" rows="4" placeholder="按说明书输入 data 字段，不需要 NUL 结束符"></textarea></label>
-          <div class="actions"><button type="submit">发送 Raw</button></div>
-        </form>
-      </section>
-
       <section class="panel quick">
-        <h2>常用操作</h2>
+        <h2>功能命令</h2>
         <div class="quick-grid" id="quickActions"></div>
       </section>
 
-      <section class="panel schemas">
-        <h2>MID Schema</h2>
-        <input id="schemaFilter" class="filter" placeholder="过滤 MID 或描述">
-        <div class="schema-list" id="schemaList"></div>
-      </section>
+      <div class="side-stack">
+        <section class="panel controller-state">
+          <div class="state-title">
+            <h2>控制器状态</h2>
+          </div>
+          <div class="state-grid" id="controllerState"></div>
+        </section>
+
+        <section class="panel result-panel">
+          <h2>拧紧结果</h2>
+          <div class="result-tabs" id="resultTabs"></div>
+          <div class="result-detail" id="resultDetail"></div>
+        </section>
+      </div>
 
       <section class="panel events">
         <div class="event-header">
@@ -81,7 +91,71 @@
           <tbody id="eventRows"></tbody>
         </table>
       </section>
+
+      <section class="panel raw-console">
+        <h2>手动 MID</h2>
+        <form id="rawForm" class="raw-form">
+          <label>MID <input name="mid" value="0001" maxlength="4"></label>
+          <label>Revision <input name="revision" value="001" maxlength="3"></label>
+          <label class="check"><input name="noAck" type="checkbox"> No ack</label>
+          <label class="raw-data">Data ASCII <textarea name="rawData" rows="3" placeholder="只填 data 字段，不需要 NUL"></textarea></label>
+          <button type="submit">发送 Raw</button>
+        </form>
+        <details class="schema-details">
+          <summary>MID Schema 查询</summary>
+          <input id="schemaFilter" class="filter" placeholder="过滤 MID 或描述">
+          <div class="schema-list" id="schemaList"></div>
+        </details>
+      </section>
     </main>
+
+    <div class="modal-backdrop" id="paramModal" hidden>
+      <form class="modal" id="paramForm">
+        <div class="modal-head">
+          <div>
+            <h2 id="paramTitle">参数</h2>
+            <p id="paramSubtitle"></p>
+          </div>
+          <button class="icon-button" type="button" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" id="paramFields"></div>
+        <div class="modal-actions">
+          <button type="button" class="secondary" data-close-modal>取消</button>
+          <button type="submit">发送</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-backdrop" id="curveModal" hidden>
+      <div class="modal curve-modal">
+        <div class="modal-head">
+          <div>
+            <h2>曲线数据</h2>
+            <p id="curveSubtitle">暂无曲线</p>
+          </div>
+          <div class="curve-controls">
+            <label>主坐标
+              <select id="curveMainMode">
+                <option value="torque-angle">扭矩 / 角度</option>
+                <option value="torque-time">扭矩 / 时间</option>
+              </select>
+            </label>
+            <label>副坐标
+              <select id="curveSecondaryMode">
+                <option value="none">无</option>
+                <option value="speed">速度</option>
+                <option value="acceleration">加速度</option>
+              </select>
+            </label>
+          </div>
+          <button class="icon-button" type="button" data-close-curve>×</button>
+        </div>
+        <div class="curve-stage">
+          <canvas id="curveCanvas" width="900" height="420"></canvas>
+          <div id="curveTooltip" class="curve-tooltip" hidden></div>
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="/app.js"></script>
   </body>
